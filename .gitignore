@@ -1,0 +1,11 @@
+node_modules
+.next
+.env
+.env.local
+dev.db
+prisma/dev.db
+.vscode
+.DS_Store
+*.log
+pnpm-lock.yaml
+yarn.lock

@@ -1,0 +1,44 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int                  @id @default(autoincrement())
+  name      String?
+  email     String               @unique
+  password  String
+  role      String               @default("resident")
+  flatId    Int?
+  createdAt DateTime             @default(now())
+  requests  MaintenanceRequest[] @relation("CreatedBy")
+  assigned  MaintenanceRequest[] @relation("AssignedTo")
+}
+
+model Flat {
+  id        Int                  @id @default(autoincrement())
+  block     String
+  number    String
+  ownerName String?
+  requests  MaintenanceRequest[]
+}
+
+model MaintenanceRequest {
+  id           Int      @id @default(autoincrement())
+  title        String
+  description  String?
+  status       String   @default("open")
+  priority     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime?
+  createdById  Int?
+  assignedToId Int?
+  flatId       Int?
+  CreatedBy    User?    @relation("CreatedBy", fields: [createdById], references: [id])
+  AssignedTo   User?    @relation("AssignedTo", fields: [assignedToId], references: [id])
+  Flat         Flat?    @relation(fields: [flatId], references: [id])
+}
